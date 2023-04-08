@@ -11,58 +11,63 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Path pronostico = Paths.get("pronostico.csv");
         Path resultado = Paths.get("resultado.csv");
-        ArrayList<String> informacion = new ArrayList<>();
+        ArrayList<String> informacion = new ArrayList<>(); //Aca se almacenaran la informacion proveida por los archivos csv
+        ArrayList<Equipo> equipos1 = new ArrayList<>(); //Aca se almacenaran los equipos 1 de los x partidos
+        ArrayList<Equipo> equipos2 = new ArrayList<>(); //Aca se almacenaran los equipos 2 de los x partidos
+        ArrayList<Partido> partidos = new ArrayList<>(); //Aca se almacenaran todos los partidos
+        ArrayList<Pronostico> pronosticos = new ArrayList<>(); //Aca se almacenaran los pronosticos sobre los partidos de la persona
 
+        //Se lee la informacion que contiene los resultados de los partidos
         for (String linea : Files.readAllLines(resultado)){
             informacion.add(linea);
             System.out.println(linea);
         }
 
-        System.out.println("---------------------------------");
+        System.out.println("-------------------------------------------");
 
-        String[] infoPartido1 = informacion.get(1).split(";");
-        String[] infoPartido2 = informacion.get(2).split(";");
+        //Creamos los equipos con la informacion obtenida
+        for (int i=1;i<informacion.size();i++){
+            equipos1.add(new Equipo(informacion.get(i).split(";")[0]));
+        }
 
-        Equipo equipo11 = new Equipo(infoPartido1[0]);
-        Equipo equipo12 = new Equipo(infoPartido1[3]);
-        Equipo equipo21 = new Equipo(infoPartido2[0]);
-        Equipo equipo22 = new Equipo(infoPartido2[3]);
+        for (int i=1;i<informacion.size();i++){
+            equipos2.add(new Equipo(informacion.get(i).split(";")[3]));
+        }
 
-        Partido partido1 = new Partido(equipo11,equipo12);
-        partido1.setGoles1(Integer.parseInt(infoPartido1[1]));
-        partido1.setGoles2(Integer.parseInt(infoPartido1[2]));
-        partido1.setResultado();
+        //creamos los partidos con los equipos y los goles
+        for (int i=0;i<equipos1.size();i++){
+            partidos.add(new Partido(equipos1.get(i),equipos2.get(i)));
+            partidos.get(i).setGoles1(Integer.parseInt(informacion.get(i+1).split(";")[1])); //Cargo los goles del equipo 1 del partido i
+            partidos.get(i).setGoles2(Integer.parseInt(informacion.get(i+1).split(";")[2])); //Cargo los goles del equipo 2 del partido i
+            partidos.get(i).setResultado(); //Una vez cargados los goles del partido i establezco el resultado del mismo
+        }
 
-        Partido partido2 = new Partido(equipo21,equipo22);
-        partido2.setGoles1(Integer.parseInt(infoPartido2[1]));
-        partido2.setGoles2(Integer.parseInt(infoPartido2[2]));
-        partido2.setResultado();
-
+        informacion.clear();
+        //Ahora leemos la informacion de los pronosticos que hizo la persona
         for (String linea : Files.readAllLines(pronostico)){
             informacion.add(linea);
             System.out.println(linea);
         }
 
-        System.out.println("---------------------------------");
+        System.out.println("-------------------------------------------");
 
-        String[] infoPronostico1 = informacion.get(4).split(";");
-        String[] infoPronostico2 = informacion.get(5).split(";");
+        //Cargamos los pronosticos de cada uno de los partidos
+        for (int i=0;i<partidos.size();i++){
+            pronosticos.add(new Pronostico(partidos.get(i))); //le asignamos el partido sobre el cual hizo el pronostico
+            pronosticos.get(i).setResultado(informacion.get(i+1).split(";")); //comparamos resultados
+        }
 
-        Pronostico pronostico1 = new Pronostico(partido1);
-        pronostico1.setResultado(infoPronostico1);
-        Pronostico pronostico2 = new Pronostico(partido2);
-        pronostico2.setResultado(infoPronostico2);
-
+        //creamos la ronda con todos los partidos
         Ronda ronda1= new Ronda();
-        ronda1.setEncuentro(partido1, pronostico1);
-        ronda1.setEncuentro(partido2, pronostico2);
+        ronda1.setPartidos(partidos);
 
-        System.out.println("Encuentro nº1: " + pronostico1
-                +"\nEncuentro nº2: "+ pronostico2);
+        //mostramos el resultado final
+        for (int i=0;i<pronosticos.size();i++) {
+            System.out.println("Encuentro nº"+(i+1)+": " + pronosticos.get(i));
+            System.out.println("Resultado ("+partidos.get(i).getEquipo1()+ " - "+partidos.get(i).getEquipo2()+"): " + partidos.get(i).getResultado() +"\n");
+        }
+        System.out.println("    La persona sumo un total de "+ ronda1.getPuntos(pronosticos) +" PUNTO/S");
 
-        System.out.println("Encuentro nº1: " + partido1.getResultado()
-                +"\nEncuentro nº2: "+ partido2.getResultado() );
-        System.out.println("\n    La persona sumo un total de "+ ronda1.getPuntos() +" punto/s");
 
     }
 }

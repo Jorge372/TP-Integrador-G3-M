@@ -9,7 +9,7 @@ public class Pronostico {
         partido=p;
     }
 
-    public void setResultado(String[] s) {
+    public void setResultado(String[] s) { //Verifica en que "celda" la persona marco para apostar por dicho equipo y lo establece como resultado en un Enum
 
         if (!s[1].equals(""))
             resultado = ResultadoEnum.ganaEquipo1;

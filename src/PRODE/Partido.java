@@ -13,14 +13,16 @@ public class Partido {
     }
 
     public void setGoles1(int goles1) {
+
         this.goles1 = goles1;
     }
 
     public void setGoles2(int goles2) {
+
         this.goles2 = goles2;
     }
 
-    public void setResultado(){
+    public void setResultado(){ //compara la cantidad de goles y establece el resultado como un enum
         if (goles1>goles2)
             resultado = ResultadoEnum.ganaEquipo1;
         else if (goles1<goles2)
