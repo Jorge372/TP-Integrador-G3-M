@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Path pronostico = Paths.get("pronostico.csv");
         Path resultado = Paths.get("resultado.csv");
-        ArrayList<String> informacion = new ArrayList<>(); //Aca se almacenaran la informacion proveida por los archivos csv
+        ArrayList<String> informacion = new ArrayList<>(); //Aca se almacenaran la informacion provista por los archivos csv
         ArrayList<Equipo> equipos1 = new ArrayList<>(); //Aca se almacenaran los equipos 1 de los x partidos
         ArrayList<Equipo> equipos2 = new ArrayList<>(); //Aca se almacenaran los equipos 2 de los x partidos
         ArrayList<Partido> partidos = new ArrayList<>(); //Aca se almacenaran todos los partidos
